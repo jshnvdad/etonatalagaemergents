@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+!EmergencyApp.User/
+EmergencyApp.User/bin/
+EmergencyApp.User/obj/

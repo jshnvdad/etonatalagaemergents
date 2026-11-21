@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EmergencyApp.User.ViewModels"
+             xmlns:models="clr-namespace:EmergencyApp.User.Models"
+             x:Class="EmergencyApp.User.Views.ProfilePage"
+             x:DataType="vm:ProfileViewModel"
+             Title="Profile">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Label Text="Personal info" FontAttributes="Bold" FontSize="18" />
+            <Entry Placeholder="Full name" Text="{Binding FullName}" />
+            <Entry Placeholder="Phone" Keyboard="Telephone" Text="{Binding Phone}" />
+            <Label Text="{Binding Email}" Style="{StaticResource Muted}" />
+
+            <Label Text="Medical info (helps responders)" FontAttributes="Bold" FontSize="18" Margin="0,10,0,0" />
+            <Entry Placeholder="Blood type (e.g. O+)" Text="{Binding BloodType}" />
+            <Entry Placeholder="Allergies" Text="{Binding Allergies}" />
+            <Entry Placeholder="Medical conditions" Text="{Binding Conditions}" />
+
+            <Grid ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+                <Label Text="Emergency contacts" FontAttributes="Bold" FontSize="18" VerticalOptions="Center" />
+                <Button Grid.Column="1" Text="+ Add" HeightRequest="38" Command="{Binding AddContactCommand}" />
+            </Grid>
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}" Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:EmergencyContact">
+                        <Border Style="{StaticResource Card}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Phone}" Style="{StaticResource Muted}" />
+                                </VerticalStackLayout>
+                                <Button Grid.Column="1" Text="✕" WidthRequest="44" HeightRequest="40" Padding="0"
+                                        BackgroundColor="Transparent" TextColor="{StaticResource Primary}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ProfileViewModel}}, Path=DeleteContactCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Label Text="Settings" FontAttributes="Bold" FontSize="18" Margin="0,10,0,0" />
+            <Entry Placeholder="Server URL" Keyboard="Url" Text="{Binding ServerUrl}" />
+            <Entry Placeholder="Local emergency number" Keyboard="Telephone" Text="{Binding EmergencyNumber}" />
+
+            <Button Text="Save" Command="{Binding SaveCommand}" Margin="0,10,0,0" />
+            <Button Text="Log out" Style="{StaticResource Outline}" Command="{Binding LogoutCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

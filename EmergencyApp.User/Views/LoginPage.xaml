@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EmergencyApp.User.ViewModels"
+             x:Class="EmergencyApp.User.Views.LoginPage"
+             x:DataType="vm:LoginViewModel">
+    <ScrollView>
+        <VerticalStackLayout Padding="28" Spacing="14" VerticalOptions="Center">
+            <Label Text="🚨" FontSize="64" HorizontalOptions="Center" />
+            <Label Text="Emergency Help" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+            <Label Text="Log in to request help fast" Style="{StaticResource Muted}" HorizontalOptions="Center" />
+
+            <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
+            <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+            <Label Text="{Binding Error}" TextColor="{StaticResource Primary}" />
+
+            <Button Text="Log in" Command="{Binding LoginCommand}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
+            <Button Text="Create account" Style="{StaticResource Outline}" Command="{Binding GoToRegisterCommand}" />
+            <Button Text="Server settings" BackgroundColor="Transparent" TextColor="{StaticResource TextMuted}" Command="{Binding ServerSettingsCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

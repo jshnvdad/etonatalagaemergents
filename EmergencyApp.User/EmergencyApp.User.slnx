@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="EmergencyApp.User.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>

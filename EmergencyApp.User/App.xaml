@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EmergencyApp.User.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Primary">#D32F2F</Color>
+            <Color x:Key="PrimaryDark">#9A0007</Color>
+            <Color x:Key="Surface">#F6F6F8</Color>
+            <Color x:Key="TextDark">#1C1B1F</Color>
+            <Color x:Key="TextMuted">#6B6B76</Color>
+
+            <Style TargetType="Page" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor" Value="White" />
+            </Style>
+            <Style TargetType="Shell" ApplyToDerivedTypes="True">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="White" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TextMuted}" />
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+            </Style>
+            <Style x:Key="Muted" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextMuted}" />
+                <Setter Property="FontSize" Value="13" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextMuted}" />
+            </Style>
+            <Style TargetType="Editor">
+                <Setter Property="TextColor" Value="{StaticResource TextDark}" />
+                <Setter Property="PlaceholderColor" Value="{StaticResource TextMuted}" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="CornerRadius" Value="12" />
+                <Setter Property="HeightRequest" Value="50" />
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+            <Style x:Key="Outline" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderColor" Value="{StaticResource Primary}" />
+                <Setter Property="BorderWidth" Value="1.5" />
+            </Style>
+            <Style x:Key="Card" TargetType="Border">
+                <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
+                <Setter Property="StrokeThickness" Value="0" />
+                <Setter Property="Padding" Value="14" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 14" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

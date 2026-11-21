@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EmergencyApp.User.ViewModels"
+             xmlns:models="clr-namespace:EmergencyApp.User.Models"
+             x:Class="EmergencyApp.User.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Title="Emergency SOS">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
+            <Label Text="{Binding Greeting}" FontSize="22" FontAttributes="Bold" />
+            <Label Text="What kind of help do you need?" Style="{StaticResource Muted}" />
+
+            <CollectionView ItemsSource="{Binding Types}" SelectionMode="Single"
+                            SelectedItem="{Binding SelectedType}" HeightRequest="200">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="10" HorizontalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:EmergencyTypeOption">
+                        <Border Style="{StaticResource Card}" HeightRequest="90">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Normal" />
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#FFCDD2" />
+                                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                                            <Setter Property="StrokeThickness" Value="2" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                                <Label Text="{Binding Icon}" FontSize="30" HorizontalOptions="Center" />
+                                <Label Text="{Binding Name}" FontAttributes="Bold" HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Editor Placeholder="Describe the situation (optional)" Text="{Binding Description}"
+                    AutoSize="TextChanges" MinimumHeightRequest="80" MaxLength="300" />
+
+            <Button Text="🚨  SEND SOS" Command="{Binding SendSosCommand}" HeightRequest="64"
+                    FontSize="20" BackgroundColor="{StaticResource Primary}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Primary}" />
+            <Label Text="{Binding StatusText}" HorizontalTextAlignment="Center" />
+
+            <Button Text="📞  Call emergency number" Style="{StaticResource Outline}" Command="{Binding CallEmergencyCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

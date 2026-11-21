@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EmergencyApp.User.ViewModels"
+             xmlns:models="clr-namespace:EmergencyApp.User.Models"
+             x:Class="EmergencyApp.User.Views.HistoryPage"
+             x:DataType="vm:HistoryViewModel"
+             Title="My requests">
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding RefreshCommand}">
+        <CollectionView ItemsSource="{Binding Items}" Margin="16,12">
+            <CollectionView.EmptyView>
+                <Label Text="No requests yet." Style="{StaticResource Muted}" HorizontalOptions="Center" Margin="0,40" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:EmergencyRequest">
+                    <Border Style="{StaticResource Card}">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto">
+                            <Label Grid.RowSpan="3" Text="{Binding Icon}" FontSize="30" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding Type}" FontAttributes="Bold" FontSize="16" />
+                            <Label Grid.Column="2" Text="{Binding Status}" TextColor="{Binding StatusColor}" FontAttributes="Bold" />
+                            <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding CreatedLocal}" Style="{StaticResource Muted}" />
+                            <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding ResponderName, StringFormat='Responder: {0}'}" Style="{StaticResource Muted}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>
