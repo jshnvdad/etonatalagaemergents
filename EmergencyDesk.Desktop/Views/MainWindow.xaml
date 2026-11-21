@@ -1,0 +1,334 @@
+<Window x:Class="EmergencyDesk.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:m="clr-namespace:EmergencyDesk.Models"
+        Title="Emergency Desk" Width="1280" Height="780" MinWidth="1000" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource BgBrush}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="PageStyle" TargetType="Grid">
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+
+        <Style x:Key="StatTitle" TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style x:Key="StatValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="34"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        </Style>
+        <Style x:Key="Label" TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" Background="{StaticResource PanelBrush}">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Margin="18,22,18,22">
+                    <TextBlock Text="EMERGENCY DESK" FontWeight="Bold" FontSize="14"
+                               Foreground="{StaticResource AccentBrush}"/>
+                    <TextBlock Text="{Binding DisplayName}" FontSize="15" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding Role}" Style="{StaticResource Muted}" FontSize="12"/>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom" Margin="16">
+                    <Button Content="Sign out" Command="{Binding LogoutCommand}"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="Dashboard" IsChecked="True"
+                                 Command="{Binding NavigateCommand}" CommandParameter="Dashboard"/>
+                    <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="Incidents"
+                                 Command="{Binding NavigateCommand}" CommandParameter="Incidents"/>
+                    <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="Responders"
+                                 Command="{Binding NavigateCommand}" CommandParameter="Responders"/>
+                    <RadioButton Style="{StaticResource NavButton}" GroupName="nav" Content="App Users"
+                                 Visibility="{Binding IsAdmin, Converter={StaticResource BoolToVis}}"
+                                 Command="{Binding NavigateCommand}" CommandParameter="Users"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Content -->
+        <Grid Grid.Column="1" Margin="24,20,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+
+                <!-- DASHBOARD -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid" BasedOn="{StaticResource PageStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentPage}" Value="Dashboard">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Dashboard" Style="{StaticResource Heading}" Margin="0,0,0,16"/>
+
+                    <UniformGrid Grid.Row="1" Rows="1" Columns="4">
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="NEW REPORTS" Style="{StaticResource StatTitle}"/>
+                                <TextBlock Text="{Binding PendingCount}" Style="{StaticResource StatValue}"
+                                           Foreground="{StaticResource AccentBrush}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="ACTIVE" Style="{StaticResource StatTitle}"/>
+                                <TextBlock Text="{Binding ActiveCount}" Style="{StaticResource StatValue}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="RESOLVED" Style="{StaticResource StatTitle}"/>
+                                <TextBlock Text="{Binding ResolvedCount}" Style="{StaticResource StatValue}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="RESPONDERS AVAILABLE" Style="{StaticResource StatTitle}"/>
+                                <TextBlock Text="{Binding AvailableResponders}" Style="{StaticResource StatValue}"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+
+                    <Border Grid.Row="2" Style="{StaticResource Card}" Padding="0">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Text="Latest reports" FontSize="15" FontWeight="SemiBold"
+                                       Margin="18,16,18,10"/>
+                            <DataGrid ItemsSource="{Binding IncidentsView}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="#" Binding="{Binding Id}" Width="50"/>
+                                    <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="90"/>
+                                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                                    <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                                    <DataGridTextColumn Header="Reported" Binding="{Binding ReportedLocal}" Width="150"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+
+                <!-- INCIDENTS -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid" BasedOn="{StaticResource PageStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentPage}" Value="Incidents">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="320"/>
+                    </Grid.ColumnDefinitions>
+
+                    <DockPanel Grid.ColumnSpan="2" Margin="0,0,12,14">
+                        <ComboBox DockPanel.Dock="Right" ItemsSource="{Binding StatusFilters}"
+                                  SelectedItem="{Binding StatusFilter}"/>
+                        <TextBlock Text="Incidents" Style="{StaticResource Heading}"/>
+                    </DockPanel>
+
+                    <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
+                        <DataGrid ItemsSource="{Binding IncidentsView}" SelectedItem="{Binding SelectedIncident}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="#" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="90"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                                <DataGridTextColumn Header="Reporter" Binding="{Binding ReporterName}" Width="130"/>
+                                <DataGridTextColumn Header="Responder" Binding="{Binding AssignedResponderName}" Width="130"/>
+                                <DataGridTextColumn Header="Reported" Binding="{Binding ReportedLocal}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel DataContext="{Binding}">
+                                <TextBlock Text="Incident details" FontSize="15" FontWeight="SemiBold"/>
+                                <TextBlock Text="Select an incident from the list." Margin="0,8,0,0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Muted}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedIncident}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <StackPanel DataContext="{Binding SelectedIncident}">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock Text="Description" Style="{StaticResource Label}"/>
+                                    <TextBlock Text="{Binding Description}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Reporter" Style="{StaticResource Label}"/>
+                                    <TextBlock>
+                                        <Run Text="{Binding ReporterName, Mode=OneWay}"/>
+                                        <Run Text=" · "/>
+                                        <Run Text="{Binding ReporterPhone, Mode=OneWay}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="Location" Style="{StaticResource Label}"/>
+                                    <TextBlock Text="{Binding Address}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding Coordinates}" Style="{StaticResource Muted}"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Assign responder" Style="{StaticResource Label}" Margin="0,18,0,4"/>
+                                <ComboBox ItemsSource="{Binding Responders}" SelectedItem="{Binding AssignChoice}"
+                                          DisplayMemberPath="Name"/>
+                                <Button Content="Assign" Command="{Binding AssignCommand}" Margin="0,8,0,0"
+                                        Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left"/>
+
+                                <TextBlock Text="Update status" Style="{StaticResource Label}" Margin="0,18,0,4"/>
+                                <ComboBox ItemsSource="{Binding IncidentStatuses}" SelectedItem="{Binding NewStatusChoice}"/>
+                                <Button Content="Update" Command="{Binding UpdateStatusCommand}" Margin="0,8,0,0"
+                                        HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- RESPONDERS -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid" BasedOn="{StaticResource PageStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentPage}" Value="Responders">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="320"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.ColumnSpan="2" Text="Responders" Style="{StaticResource Heading}" Margin="0,0,0,14"/>
+
+                    <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
+                        <DataGrid ItemsSource="{Binding Responders}" SelectedItem="{Binding SelectedResponder}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="130"/>
+                                <DataGridTextColumn Header="Specialty" Binding="{Binding Specialty}" Width="100"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="130"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="Responder" FontSize="15" FontWeight="SemiBold"/>
+                                <TextBlock Text="Name" Style="{StaticResource Label}"/>
+                                <TextBox Text="{Binding EditName, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="Unit" Style="{StaticResource Label}"/>
+                                <TextBox Text="{Binding EditUnit, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="Phone" Style="{StaticResource Label}"/>
+                                <TextBox Text="{Binding EditPhone, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="Specialty" Style="{StaticResource Label}"/>
+                                <ComboBox ItemsSource="{Binding IncidentTypes}" SelectedItem="{Binding EditSpecialty}"/>
+                                <TextBlock Text="Status" Style="{StaticResource Label}"/>
+                                <ComboBox ItemsSource="{Binding ResponderStatuses}" SelectedItem="{Binding EditStatus}"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                    <Button Content="Save" Command="{Binding SaveResponderCommand}"
+                                            Style="{StaticResource PrimaryButton}"/>
+                                    <Button Content="New" Command="{Binding NewResponderCommand}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- USERS (admin) -->
+                <Grid>
+                    <Grid.Style>
+                        <Style TargetType="Grid" BasedOn="{StaticResource PageStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CurrentPage}" Value="Users">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <DockPanel Margin="0,0,12,14">
+                        <Button DockPanel.Dock="Right" Content="Activate / Deactivate selected"
+                                Command="{Binding ToggleUserCommand}" Margin="0"/>
+                        <TextBlock Text="App users" Style="{StaticResource Heading}"/>
+                    </DockPanel>
+
+                    <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0">
+                        <DataGrid ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*"/>
+                                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="220"/>
+                                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="130"/>
+                                <DataGridTextColumn Header="Registered" Binding="{Binding RegisteredLocal}" Width="110"/>
+                                <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, Mode=OneWay}" Width="70"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- Status bar -->
+            <Border Grid.Row="1" Padding="0,8,12,10">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Right" Style="{StaticResource Muted}" FontSize="12"
+                               Text="{Binding LastUpdated, StringFormat='Updated {0:T}'}"/>
+                    <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Muted}" FontSize="12"/>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
